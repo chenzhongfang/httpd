@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)packages\libapr\build\native\libapr.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\libapr\build\native\libapr.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\libapr.redist\build\native\libapr.redist.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\libapr.redist\build\native\libapr.redist.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\libapr-util\build\native\libapr-util.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\libapr-util\build\native\libapr-util.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\libapr-util.redist\build\native\libapr-util.redist.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\libapr-util.redist\build\native\libapr-util.redist.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\serf\build\native\serf.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\serf\build\native\serf.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\serf.redist\build\native\serf.redist.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\serf.redist\build\native\serf.redist.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\pcre\build\native\pcre.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\pcre\build\native\pcre.targets')"/>
+  <Import Project="$(MSBuildThisFileDirectory)packages\pcre.redist\build\native\pcre.redist.targets" Condition="exists('$(MSBuildThisFileDirectory)packages\pcre.redist\build\native\pcre.redist.targets')"/>
+</Project>

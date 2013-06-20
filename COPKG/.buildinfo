@@ -1,0 +1,67 @@
+@import default_tools;
+
+default {
+
+
+    //files to relocate...
+    .Copy {
+        SourceFiles : {
+            $(MSBuildThisFileDirectory)..\os\win32\win32_config_layout.h,
+            $(MSBuildThisFileDirectory)..\modules\generators\mod_cgi.h,
+            $(MSBuildThisFileDirectory)..\modules\dav\main\mod_dav.h,
+            $(MSBuildThisFileDirectory)..\modules\filters\mod_include.h,
+            $(MSBuildThisFileDirectory)..\modules\proxy\mod_proxy.h,
+            $(MSBuildThisFileDirectory)..\modules\core\mod_so.h,
+            $(MSBuildThisFileDirectory)..\os\win32\os.h,
+            $(MSBuildThisFileDirectory)test_char.h,
+        };
+        DestinationFiles : {
+            $(MSBuildThisFileDirectory)..\include\ap_config_layout.h,
+            $(MSBuildThisFileDirectory)..\include\mod_cgi.h,
+            $(MSBuildThisFileDirectory)..\include\mod_dav.h,
+            $(MSBuildThisFileDirectory)..\include\mod_include.h,
+            $(MSBuildThisFileDirectory)..\include\mod_proxy.h,
+            $(MSBuildThisFileDirectory)..\include\mod_so.h,
+            $(MSBuildThisFileDirectory)..\include\os.h,
+            $(MSBuildThisFileDirectory)..\server\test_char.h,
+        };
+    };
+
+    
+    .Exec {
+        Condition="Exists('$(MSBuildThisFileDirectory)packages.config')";
+        Command = @"nuget install $(MSBuildThisFileDirectory)packages.config -x -OutputDirectory .\packages";
+    };
+
+    (PlatformToolsets, Architectures, ReleaseOrDebug, "Dynamic") => {
+		.PushEnvironment {};
+		.LoadSystemEnvironment {};
+        .SetEnvironmentFromTarget.Target = "VC_${0}_${1}";
+		.Message.Text = @"
+
+
+        Env:        ${0}-${1}  :  ${2}  ${3}
+        EnvExists:  $(IsEnvironmentValid)";
+        
+        .Exec {
+            Condition="$(IsEnvironmentValid)";
+            Command = @"msbuild $(MSBuildThisFileDirectory)libhttpd.vcxproj /p:PlatformToolset=${0};Platform=${1};Configuration=${2};UsesConfigurationType=${3}";
+        };
+        .Exec {
+            Condition="$(IsEnvironmentValid)";
+            Command = @"msbuild $(MSBuildThisFileDirectory)httpd.vcxproj /p:PlatformToolset=${0};Platform=${1};Configuration=${2};UsesConfigurationType=${3}";
+        };
+        
+        .PopEnvironment{};
+	};
+	
+};
+
+clean {
+    .RemoveDir.Directories = @"$(MSBuildThisFileDirectory)intermediate";
+};
+
+nuke {
+    .RemoveDir.Directories = @"$(MSBuildThisFileDirectory)intermediate";
+    .RemoveDir.Directories = @"$(MSBuildThisFileDirectory)output";
+};

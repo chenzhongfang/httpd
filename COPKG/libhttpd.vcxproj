@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="PreBuildCmds;PreBuildTargets;Build;PostBuildCmds;PostBuildTargets" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="CoApp" >
+    <CoAppEtcDirectory>$(registry:HKEY_LOCAL_MACHINE\Software\Outercurve\CoApp.Powershell\etc)</CoAppEtcDirectory>
+  </PropertyGroup>
+  
+  <Import Condition="Exists('$(CoAppEtcDirectory)\common-variables.vcxproj')" Project="$(CoAppEtcDirectory)\common-variables.vcxproj" />
+  
+  <PropertyGroup Label="ConfigurationSettings">
+    <!-- set to Application or DynamicLibrary (DynamicLibrary can get altered to StaticLibrary by PTK -->
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+
+    <!-- Common Compiler Defines (semicolon delimited) -->
+    <Defines>WIN32;_WINDOWS;$(Defines)</Defines>
+    <Defines Condition="$(IS_DYNAMIC)">AP_DECLARE_EXPORT;$(Defines)</Defines>
+    <Defines Condition="$(IS_STATIC)">AP_DECLARE_STATIC;$(Defines)</Defines>
+
+    <!-- Additional Include folders (semicolon delimited) -->
+    <IncludeDirectories>../include</IncludeDirectories>
+
+    <!-- Additional Library folders (semicolon delimited) -->
+    <LibraryDirectories></LibraryDirectories>
+
+    <!-- Libraries to Link with -->
+    <Libraries>kernel32.lib;user32.lib;advapi32.lib;ws2_32.lib;mswsock.lib</Libraries>
+    
+    <!-- Batch script to run before Build-->
+    <PreBuild></PreBuild>
+
+    <!-- Batch script to run after Build-->
+    <PostBuild></PostBuild>
+
+    <!-- Targets to run before Build (semcolon delimited)-->
+    <PreBuildTargets></PreBuildTargets>
+
+    <!-- Targets to run before Build (semcolon delimited)-->
+    <PostBuildTargets></PostBuildTargets>
+  
+    <!-- for Dynamic libs, you can specify the Module .DEF file path -->
+    <ModuleDefinitionFile></ModuleDefinitionFile>
+  </PropertyGroup>
+
+  <Import Condition="Exists('$(CoAppEtcDirectory)\common-header.vcxproj')" Project="$(CoAppEtcDirectory)\common-header.vcxproj" />
+
+  <ItemDefinitionGroup>
+    <ResourceCompile>
+      <PreprocessorDefinitions>BIN_NAME=libhttpd.dll;LONG_NAME=Apache HTTP Server Core;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\include\;$(MSBuildThisFileDirectory)packages\libapr\build\native\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <BaseAddress>@"..\os\win32\BaseAddr.ref",libhttpd.dll</BaseAddress>
+    </Link>
+  </ItemDefinitionGroup> 
+  
+  <ItemGroup>
+    <!-- Include the source files to compile here -->
+    <!-- <ClCompile Include="..\src\foo.c" /> -->
+    <ClCompile Include="..\server\buildmark.c">
+<!--      <ExcludedFromBuild>true</ExcludedFromBuild> -->
+    </ClCompile>
+    <ClCompile Include="..\modules\http\byterange_filter.c" />
+    <ClCompile Include="..\modules\http\chunk_filter.c" />
+    <ClCompile Include="..\server\config.c" />
+    <ClCompile Include="..\server\connection.c" />
+    <ClCompile Include="..\server\core.c" />
+    <ClCompile Include="..\server\core_filters.c" />
+    <ClCompile Include="..\modules\http\http_core.c" />
+    <ClCompile Include="..\modules\http\http_etag.c" />
+    <ClCompile Include="..\modules\http\http_filters.c" />
+    <ClCompile Include="..\modules\http\http_protocol.c" />
+    <ClCompile Include="..\modules\http\http_request.c" />
+    <ClCompile Include="..\server\log.c" />
+    <ClCompile Include="..\server\protocol.c" />
+    <ClCompile Include="..\server\request.c" />
+    <ClCompile Include="..\server\vhost.c" />
+
+    <ClCompile Include="..\modules\core\mod_so.c" />
+    <ClCompile Include="..\modules\arch\win32\mod_win32.c" />
+    <ClCompile Include="..\os\win32\modules.c" />
+
+    <ClCompile Include="..\server\eoc_bucket.c" />
+    <ClCompile Include="..\server\eor_bucket.c" />
+    <ClCompile Include="..\server\error_bucket.c" />
+    <ClCompile Include="..\server\util.c" />
+    <ClCompile Include="..\server\util_cfgtree.c" />
+    <ClCompile Include="..\server\util_cookies.c" />
+    <ClCompile Include="..\server\util_expr_eval.c" />
+    <ClCompile Include="..\server\util_expr_scan.c" />
+    <ClCompile Include="..\server\util_expr_parse.c" />
+    <ClCompile Include="..\server\util_filter.c" />
+    <ClCompile Include="..\server\util_md5.c" />
+    <ClCompile Include="..\server\util_mutex.c" />
+    <ClCompile Include="..\server\util_pcre.c" />
+    <ClCompile Include="..\server\util_regex.c" />
+    <ClCompile Include="..\server\util_script.c" />
+    <ClCompile Include="..\server\util_time.c" />
+    <ClCompile Include="..\os\win32\util_win32.c" />
+    <ClCompile Include="..\server\util_xml.c" />
+
+    <ClCompile Include="..\os\win32\ap_regkey.c" />
+    <ClCompile Include="..\server\mpm\winnt\child.c" />
+    <ClCompile Include="..\server\listen.c" />
+    <ClCompile Include="..\server\mpm_common.c" />
+    <ClCompile Include="..\server\mpm\winnt\mpm_winnt.c" />
+    <ClCompile Include="..\server\mpm\winnt\nt_eventlog.c" />
+    <ClCompile Include="..\server\provider.c" />
+    <ClCompile Include="..\server\scoreboard.c" />
+    <ClCompile Include="..\server\mpm\winnt\service.c" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ResourceCompile Include="..\build\win32\httpd.rc" />
+  </ItemGroup>
+
+  <Import Condition="Exists('$(CoAppEtcDirectory)\common-footer.vcxproj')" Project="$(CoAppEtcDirectory)\common-footer.vcxproj" />
+</Project>

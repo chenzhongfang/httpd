@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="PreBuildCmds;PreBuildTargets;Build;PostBuildCmds;PostBuildTargets" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="CoApp" >
+    <CoAppEtcDirectory>$(registry:HKEY_LOCAL_MACHINE\Software\Outercurve\CoApp.Powershell\etc)</CoAppEtcDirectory>
+  </PropertyGroup>
+  
+  <Import Condition="Exists('$(CoAppEtcDirectory)\common-variables.vcxproj')" Project="$(CoAppEtcDirectory)\common-variables.vcxproj" />
+  <PropertyGroup Label="CustomSettings" />
+  
+  <PropertyGroup Label="ConfigurationSettings">
+    <!-- set to Application or DynamicLibrary (DynamicLibrary can get altered to StaticLibrary by PTK -->
+    <ConfigurationType>Application</ConfigurationType>
+
+    <!-- Common Compiler Defines (semicolon delimited) -->
+    <Defines>WIN32;_WINDOWS;$(Defines)</Defines>
+
+    <!-- Additional Include folders (semicolon delimited) -->
+    <IncludeDirectories>../include</IncludeDirectories>
+
+    <!-- Additional Library folders (semicolon delimited) -->
+    <LibraryDirectories></LibraryDirectories>
+
+    <!-- Libraries to Link with -->
+    <Libraries>kernel32.lib;user32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;libhttpd.lib</Libraries>
+    
+    <!-- Batch script to run before Build-->
+    <PreBuild></PreBuild>
+
+    <!-- Batch script to run after Build-->
+    <PostBuild></PostBuild>
+
+    <!-- Batch script to run before Link step-->
+    <PreLink></PreLink>
+
+    <!-- Batch script to run after Link-->
+    <PostLink></PostLink>
+
+    <!-- Batch script to run before Lib step-->
+    <PreLib></PreLib>
+
+    <!-- Batch script to run after Lib-->
+    <PostLib></PostLib>
+
+    <!-- Targets to run before Build (semcolon delimited)-->
+    <PreBuildTargets></PreBuildTargets>
+
+    <!-- Targets to run before Build (semcolon delimited)-->
+    <PostBuildTargets></PostBuildTargets>
+  
+    <!-- for Dynamic libs, you can specify the Module .DEF file path -->
+    <ModuleDefinitionFile></ModuleDefinitionFile>
+  </PropertyGroup>
+
+  <Import Condition="Exists('$(CoAppEtcDirectory)\common-header.vcxproj')" Project="$(CoAppEtcDirectory)\common-header.vcxproj" />
+
+  <ItemDefinitionGroup>
+    <ResourceCompile>
+      <PreprocessorDefinitions>APP_FILE;BIN_NAME=httpd.exe;LONG_NAME=Apache HTTP Server;ICON_FILE=apache.ico;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\include\;$(MSBuildThisFileDirectory)packages\libapr\build\native\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <BaseAddress>@"..\os\win32\BaseAddr.ref",libhttpd.dll</BaseAddress>
+    </Link>
+  </ItemDefinitionGroup> 
+
+  <ItemGroup Label="C Source Files">
+    <!-- Include the source files to compile here -->
+    <!-- <ClCompile Include="..\src\foo.c" /> -->
+    <ClCompile Include="..\server\main.c" />
+  </ItemGroup>
+
+  <ItemGroup Label="Resource Files">
+    <!-- Include the source files to compile here -->
+    <!-- <ResourceCompile Include="..\src\foo.rc" /> -->
+    <ResourceCompile Include="..\build\win32\httpd.rc" />
+  </ItemGroup>
+
+  <Import Condition="Exists('$(CoAppEtcDirectory)\common-footer.vcxproj')" Project="$(CoAppEtcDirectory)\common-footer.vcxproj" />
+</Project>

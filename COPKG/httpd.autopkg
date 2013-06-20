@@ -1,0 +1,65 @@
+
+nuget {
+	// the nuspec file metadata. Gets created/updated on build
+	nuspec {
+		id = httpd;
+		version : 2.4.4.0;
+		title: Apache HTTP Server;
+		authors: {httpd contributors};
+		owners: {CoApp Project};
+		licenseUrl: "http://www.apache.org/licenses/LICENSE-2.0";
+        iconUrl: "http://httpd.apache.org/docs/trunk/images/feather.gif";
+		projectUrl: "http://github.com/coapp-packages/httpd";
+		requireLicenseAcceptance:false;
+		summary: Apache HTTP Server;
+		description: @"The Apache HTTP Server Project is an effort to develop and maintain an open-source HTTP server for modern operating systems including UNIX and Windows NT. The goal of this project is to provide a secure, efficient and extensible server that provides HTTP services in sync with the current HTTP standards.
+
+Apache httpd has been the most popular web server on the Internet since April 1996, and celebrated its 17th birthday as a project this February.
+
+	httpd homepage:  http://httpd.apache.org/";
+		releaseNotes: "Release of httpd and libhttpd 2.4.4.";
+		copyright: Copyright 2013;
+		tags: { http httpd Apache native CoApp };
+
+	};
+
+	// the files that go into the content folders
+	// (inserted into the nuspec file)
+	files {
+		include: { 
+            ..\include\*.h,
+        };
+
+		docs: {  ..\docs\**\* };
+    
+		("v100,v110", "Win32,x64", "release,debug", "Dynamic") => {
+			[${0},${1},${2},${3}] {
+				lib:     { .\output\${0}\${1}\${2}\${3}\libhttpd.lib };
+				bin:     { .\output\${0}\${1}\${2}\${3}\libhttpd.dll };
+				symbols: { .\output\${0}\${1}\${2}\${3}\libhttpd.pdb };
+                tools:   { .\output\${0}\${1}\${2}\${3}\httpd.exe,
+                           .\output\${0}\${1}\${2}\${3}\httpd.pdb };
+			};
+		};
+
+	};
+
+	// the VC++ .props file that gets generated and inserted into the ${d_content} folder
+	props { 
+		// we're going to generate a number of properties anyway. 
+        // so even if the packager doesn't specify the props object 
+        // we're going to make this file.
+	};
+
+	// the VC++ .targets file that gets generated and inserted into the ${d_content} folder
+	targets {
+		// every configuration needs to reference the include directories.
+		Defines += HAS_HTTPD;
+        
+        /*  // This condition excluded, as no static build is currently available.
+		[static]
+			Defines += AP_DECLARE_STATIC;
+        */
+	};
+}
+
